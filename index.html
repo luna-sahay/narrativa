@@ -17,7 +17,7 @@ body{display:flex;align-items:center;justify-content:center}
 /* Texto abajo a la derecha que sale al inicio */
 #texto-intro {
     position: absolute;
-    bottom: 40px;
+    bottom: 10px;
     right: 40px;
     color: white;
     font-size: 28px;
@@ -89,8 +89,8 @@ body{display:flex;align-items:center;justify-content:center}
   <img id="a" src="Escena1-Escenario1.jpg">
   <img id="b" src="Escena2-Escenario2.jpg">
 
-  <div id="texto-intro">¿Me está hablando...?</div>
-  <div id="globo-sam">¡Con todos los cohetes que van a llegar a este lugar, se va a llenar de clientes!</div>
+<div id="texto-intro" style="opacity: 0;">Shhh, Sam está hablando…</div>
+  <div id="globo-sam">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
   <button id="btn-siguiente" onclick="irASiguienteEscena()">Continuar...</button>
 
   <div id="blk"></div>
@@ -119,10 +119,19 @@ function tick(now){
   if(!run)return;
   if(t0===null)t0=now;
   var t=(now-t0)/1000;
+
+  // NUEVO: Control de tiempo para el texto de introducción
+  var txtIntro = document.getElementById('texto-intro');
+  if (t >= 11.5 && t < 13.4) {
+    txtIntro.style.opacity = '1'; // Aparece justo antes del cambio de foto
+  } else if (t >= 13.4) {
+    txtIntro.style.opacity = '0'; // Se desvanece cuando entra la nueva foto
+  }
+
   if(t>=END){
     frame(END);
     run=false;
-    finalizarAnimacionZoom(); // DISPARAMOS TUS DIÁLOGOS AL TERMINAR EL VIDEO
+    finalizarAnimacionZoom(); 
     return;
   }
   frame(t);
