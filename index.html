@@ -2,8 +2,9 @@
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hot Dogs en Marte - Intro</title>
-<link rel="preconnect" href="https://googleapis.com">
-<link href="https://googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://gstatic.com" crossorigin>
+<link href="https://googleapis.com" rel="stylesheet">
 
 <style>
 :root{color-scheme:dark;--bg:#000;box-sizing:border-box}
@@ -17,7 +18,7 @@ body{display:flex;align-items:center;justify-content:center}
 /* Texto abajo a la derecha que sale al inicio */
 #texto-intro {
     position: absolute;
-    bottom: 10px;
+    bottom: 40px;
     right: 40px;
     color: white;
     font-size: 28px;
@@ -59,31 +60,7 @@ body{display:flex;align-items:center;justify-content:center}
     width: 0;
 }
 
-/* Botón estilo flecha narrativa de cómic */
-#btn-siguiente {
-    position: absolute;
-    bottom: 40px;
-    right: 40px;
-    padding: 10px 25px;
-    background: #ff5722;
-    color: white;
-    border: none;
-    border-radius: 0px;
-    font-family: 'Kalam', cursive;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    clip-path: polygon(0% 20%, 80% 20%, 80% 0%, 100% 50%, 80% 100%, 80% 80%, 0% 80%);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease, background 0.2s, transform 0.2s;
-    z-index: 6;
-}
-#btn-siguiente:hover {
-    background: #e64a19;
-    transform: scale(1.05);
-}
-    /* Animación de pulso brillante estilo Genially */
+/* Animación de pulso brillante estilo Genially */
 @keyframes brilloGenially {
     0% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.7); transform: scale(1); }
     70% { box-shadow: 0 0 0 15px rgba(255, 87, 34, 0); transform: scale(1.02); }
@@ -94,7 +71,7 @@ body{display:flex;align-items:center;justify-content:center}
 #globo-sam.interactivo {
     cursor: pointer;
     animation: brilloGenially 2s infinite;
-    border: 2px solid #ff5722; /* Un borde sutil naranja para guiar el clic */
+    border: 2px solid #ff5722; 
 }
 
 /* Tercera escena (Tu nueva imagen a pantalla completa) */
@@ -107,28 +84,22 @@ body{display:flex;align-items:center;justify-content:center}
     opacity: 0;
     display: block;
     pointer-events: none;
-    transition: opacity 1.2s ease-in-out; /* Transición suave tipo Genially */
+    transition: opacity 1.2s ease-in-out; 
     z-index: 10;
 }
-
 </style></head><body>
+
 <div id="stage">
-  <!-- REEMPLAZA ESTA LÍNEA 69 CON TU IMAGEN EN BASE64 COMPLETA -->
+  <!-- Imágenes de tu proyecto (Corregidas y ordenadas) -->
   <img id="a" src="Escena1-Escenario1.jpg">
   <img id="b" src="Escena2-Escenario2.jpg">
-    <img id="c" src="samAvaricioso">
+  <img id="c" src="samAvaricioso.jpg"> <!-- Le agregué .jpg que le faltaba -->
 
-  <div id="texto-intro" style="opacity: 0;">¿Me está hablando...?</div>
+  <!-- Cuadro informativo dinámico (Usa el texto que elegiste) -->
+  <div id="texto-intro" style="opacity: 0;">Shhh, Sam está hablando…</div>
   
-  <!-- Añadimos 'onclick' para que reaccione al tocarlo -->
+  <!-- Globo interactivo cliqueable -->
   <div id="globo-sam" onclick="cambiarAEscenaTres()">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
-
-  <div id="blk"></div>
-</div>
-
-<div id="texto-intro" style="opacity: 0;">Shhh, Sam está hablando…</div>
-  <div id="globo-sam">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
-  <button id="btn-siguiente" onclick="irASiguienteEscena()">Continuar...</button>
 
   <div id="blk"></div>
 </div>
@@ -157,12 +128,12 @@ function tick(now){
   if(t0===null)t0=now;
   var t=(now-t0)/1000;
 
-  // NUEVO: Control de tiempo para el texto de introducción
+  // Control de tiempo para el texto informativo
   var txtIntro = document.getElementById('texto-intro');
   if (t >= 11.5 && t < 13.4) {
-    txtIntro.style.opacity = '1'; // Aparece justo antes del cambio de foto
+    txtIntro.style.opacity = '1'; 
   } else if (t >= 13.4) {
-    txtIntro.style.opacity = '0'; // Se desvanece cuando entra la nueva foto
+    txtIntro.style.opacity = '0'; 
   }
 
   if(t>=END){
@@ -180,26 +151,27 @@ function start(){t0=null;run=true;requestAnimationFrame(tick)}
 addEventListener("keydown",function(e){if(e.key==="r"||e.key==="R"){run=false;setTimeout(start,30)}});
 addEventListener("resize",function(){if(!run)frame(END)});
 
-// AL TERMINAR EL ZOOM SE ACTIVA ESTO:
 function finalizarAnimacionZoom() {
     document.getElementById('texto-intro').style.opacity = '0';
     
+    // El globo aparece a los 0.5s para leerse limpio
+    setTimeout(() => {
+        document.getElementById('globo-sam').style.opacity = '1';
+    }, 500);
+
+    // El brillo Genially se activa a los 4.5 segundos
     setTimeout(() => {
         const globo = document.getElementById('globo-sam');
-        globo.style.opacity = '1';
-        // Le agregamos la clase interactiva para que empiece a brillar al terminar el zoom
         globo.classList.add('interactivo'); 
-    }, 500);
+    }, 4500);
 }
 
-// Esta función se ejecuta mágicamente cuando el usuario "espicha" el globo de texto
 function cambiarAEscenaTres() {
-    // Escondemos el globo de texto de inmediato
     const globo = document.getElementById('globo-sam');
     globo.style.opacity = '0';
     globo.style.pointerEvents = 'none';
     
-    // Hacemos aparecer la tercera imagen en toda la pantalla con un fundido suave
+    // Transición fluida a pantalla completa
     const escena3 = document.getElementById('c');
     escena3.style.opacity = '1';
     escena3.style.pointerEvents = 'auto';
@@ -209,4 +181,3 @@ frame(0);
 window.addEventListener("load",function(){setTimeout(start,400)});
 </script>
 </body></html>
-
