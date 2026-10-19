@@ -83,11 +83,48 @@ body{display:flex;align-items:center;justify-content:center}
     background: #e64a19;
     transform: scale(1.05);
 }
+    /* Animación de pulso brillante estilo Genially */
+@keyframes brilloGenially {
+    0% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.7); transform: scale(1); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 87, 34, 0); transform: scale(1.02); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0); transform: scale(1); }
+}
+
+/* Aplicamos el brillo al globo de Sam y le indicamos que es cliqueable */
+#globo-sam.interactivo {
+    cursor: pointer;
+    animation: brilloGenially 2s infinite;
+    border: 2px solid #ff5722; /* Un borde sutil naranja para guiar el clic */
+}
+
+/* Tercera escena (Tu nueva imagen a pantalla completa) */
+#c {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    display: block;
+    pointer-events: none;
+    transition: opacity 1.2s ease-in-out; /* Transición suave tipo Genially */
+    z-index: 10;
+}
+
 </style></head><body>
 <div id="stage">
   <!-- REEMPLAZA ESTA LÍNEA 69 CON TU IMAGEN EN BASE64 COMPLETA -->
   <img id="a" src="Escena1-Escenario1.jpg">
   <img id="b" src="Escena2-Escenario2.jpg">
+    <img id="c" src="samAvaricioso">
+
+  <div id="texto-intro" style="opacity: 0;">¿Me está hablando...?</div>
+  
+  <!-- Añadimos 'onclick' para que reaccione al tocarlo -->
+  <div id="globo-sam" onclick="cambiarAEscenaTres()">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
+
+  <div id="blk"></div>
+</div>
 
 <div id="texto-intro" style="opacity: 0;">Shhh, Sam está hablando…</div>
   <div id="globo-sam">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
@@ -147,22 +184,25 @@ addEventListener("resize",function(){if(!run)frame(END)});
 function finalizarAnimacionZoom() {
     document.getElementById('texto-intro').style.opacity = '0';
     
-    // Muestra el globo de diálogo corregido sobre Sam
     setTimeout(() => {
-        document.getElementById('globo-sam').style.opacity = '1';
+        const globo = document.getElementById('globo-sam');
+        globo.style.opacity = '1';
+        // Le agregamos la clase interactiva para que empiece a brillar al terminar el zoom
+        globo.classList.add('interactivo'); 
     }, 500);
-
-    // Muestra la flecha "Continuar..." un poco después
-    setTimeout(() => {
-        const btn = document.getElementById('btn-siguiente');
-        btn.style.opacity = '1';
-        btn.style.pointerEvents = 'auto';
-    }, 2000);
 }
 
-function irASiguienteEscena() {
-    // Aquí defines qué pasará en la siguiente escena cuando le den clic a Continuar
-    alert("¡Aquí cargaremos la siguiente escena de tu historia!");
+// Esta función se ejecuta mágicamente cuando el usuario "espicha" el globo de texto
+function cambiarAEscenaTres() {
+    // Escondemos el globo de texto de inmediato
+    const globo = document.getElementById('globo-sam');
+    globo.style.opacity = '0';
+    globo.style.pointerEvents = 'none';
+    
+    // Hacemos aparecer la tercera imagen en toda la pantalla con un fundido suave
+    const escena3 = document.getElementById('c');
+    escena3.style.opacity = '1';
+    escena3.style.pointerEvents = 'auto';
 }
 
 frame(0);
