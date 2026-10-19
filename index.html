@@ -2,9 +2,9 @@
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hot Dogs en Marte - Intro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://googleapis.com">
 <link rel="preconnect" href="https://gstatic.com" crossorigin>
-<link href="https://googleapis.com" rel="stylesheet">
+<link href="https://googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 :root{color-scheme:dark;--bg:#000;box-sizing:border-box}
@@ -29,42 +29,67 @@ body{display:flex;align-items:center;justify-content:center}
     z-index: 5;
 }
 
-/* Globo de diálogo para Sam */
-#globo-sam {
+/* Base estable para los globos de diálogo */
+#globo-sam, #globo-codicia, #globo-elma-hablar, #globo-sam-respuesta, #globo-resultado-nohablar {
     position: absolute;
-    top: 40%; 
-    left: 42%; 
     background: white;
     color: black;
     font-size: 22px;
     font-weight: bold;
     padding: 15px 20px;
     border-radius: 30px;
-    max-width: 260px;
     text-align: center;
     box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
     opacity: 0; 
+    pointer-events: none;
     transition: opacity 0.8s ease;
+}
+
+#globo-sam::after, #globo-codicia::after, #globo-elma-hablar::after, #globo-sam-respuesta::after, #globo-resultado-nohablar::after {
+    content: ''; position: absolute; bottom: -15px; left: 40px;
+    border-width: 15px 15px 0; border-style: solid; border-color: white transparent; display: block; width: 0;
+}
+
+/* Ubicación y anchos fijos de cada globo */
+#globo-sam {
+    top: 25%; 
+    left: 42%; 
+    max-width: 260px;
     z-index: 5;
 }
 
-#globo-sam::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 40px;
-    border-width: 15px 15px 0;
-    border-style: solid;
-    border-color: white transparent;
-    display: block;
-    width: 0;
+#globo-codicia {
+    top: 45%;  
+    left: 28%; 
+    max-width: 420px; 
+    z-index: 20;
 }
 
+#globo-elma-hablar {
+    top: 35%;  
+    left: 55%; 
+    max-width: 280px;
+    z-index: 25;
+}
+
+#globo-sam-respuesta {
+    top: 28%;  
+    left: 38%;
+    max-width: 260px;
+    z-index: 25;
+}
+
+#globo-resultado-nohablar {
+    top: 28%;  
+    left: 38%;
+    max-width: 260px;
+    z-index: 25;
+}
 
 /* Animación de pulso brillante estilo Genially */
 @keyframes brilloGenially {
     0% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0.7); transform: scale(1); }
-    70% { box-shadow: 0 0 0 10px rgba(255, 87, 34, 0); transform: scale(1.02); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 87, 34, 0); transform: scale(1.02); }
     100% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0); transform: scale(1); }
 }
 
@@ -74,8 +99,8 @@ body{display:flex;align-items:center;justify-content:center}
     border: 2px solid #ff5722; 
 }
 
-/* Tercera escena */
-#c {
+/* Capas de imágenes controladas por opacidad */
+#c, #d, #e, #f {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -84,19 +109,66 @@ body{display:flex;align-items:center;justify-content:center}
     opacity: 0;
     display: block;
     pointer-events: none;
-    z-index: 4; 
-    transition: opacity 1.2s ease-in-out;
+    transition: opacity 1.2s ease-in-out; 
+}
+#c { z-index: 10; }
+#d { z-index: 12; } 
+#e { z-index: 14; } 
+#f { z-index: 16; } 
+
+#contenedor-decisiones {
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    z-index: 30;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+}
+
+.btn-decision {
+    background: #ff5722;
+    color: white;
+    border: 2px solid white;
+    padding: 15px 25px;
+    font-family: 'Kalam', cursive;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    transition: transform 0.2s, background 0.2s;
+}
+
+.btn-decision:hover {
+    background: #e64a19;
+    transform: scale(1.05);
 }
 </style></head><body>
 
 <div id="stage">
-  <!-- Tus imágenes de GitHub -->
   <img id="a" src="Escena1-Escenario1.jpg">
-  <img id="b" src="Escenario2-Escena2.png">
+  <img id="b" src="Escenario2-Escena2.jpg">
   <img id="c" src="samAvaricioso.png">
+  <img id="d" src="elmapreocupada.png"> 
+  <img id="e" src="sammaltratador.jpg">   
+  <img id="f" src="ElmaTriste.png"> 
 
   <div id="texto-intro" style="opacity: 0;">Shhh, Sam está hablando…</div>
+  
   <div id="globo-sam" onclick="cambiarAEscenaTres()">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
+  <div id="globo-codicia">¿Te imaginas todo el dinero que vamos a tener? ¡Seremos millonarios!</div>
+  <div id="globo-elma-hablar">¡Oye, relájate un poco Sam! Tampoco sabemos si el negocio va a ser un éxito total...</div>
+  <div id="globo-sam-respuesta">¡¿Fracaso?! Bah, estás loca. ¡El éxito está garantizado con mis Hot Dogs espaciales!</div>
+  <div id="globo-resultado-nohablar">*(Sam sigue contando billetes imaginarios en su mente sin prestarte atención)*</div>
+
+  <div id="contenedor-decisiones">
+      <button class="btn-decision" onclick="elegirOpcion('hablar')">Hablar con Sam sobre su posible fracaso en el negocio</button>
+      <button class="btn-decision" onclick="elegirOpcion('nohablar')">No hablar con él</button>
+  </div>
 
   <div id="blk"></div>
 </div>
@@ -109,19 +181,14 @@ function ease(p){return 0.5-0.5*Math.cos(Math.PI*Math.min(1,Math.max(0,p)))}
 function sm(u){u=Math.min(1,Math.max(0,u));return u*u*(3-2*u)}
 
 function frame(t){
-  // Sincronizado estrictamente con el tamaño original de tus imágenes
-  var W = 564;
-  var H = 376;
+  var W=stage.clientWidth,H=stage.clientHeight;
   var p=ease(t/FLY),s=Math.exp(Math.log(1.8)*p);
   var cx=50+0.5*p-Math.sin(p*Math.PI)*3+Math.sin(t*0.8)*0.25*(1-p);
   var cy=40+22*p+Math.sin(t*0.6)*0.2*(1-p);
   var tx=W/2-cx/100*W*s,ty=H/2-cy/100*H*s;
   tx=Math.min(0,Math.max(W-W*s,tx));ty=Math.min(0,Math.max(H-H*s,ty));
   A.style.transform="translate("+tx+"px,"+ty+"px) scale("+s+")";
-  
-  if(document.getElementById("c").style.opacity !== "1"){
-    B.style.opacity=sm((t-XF0)/XF);
-  }
+  B.style.opacity=sm((t-XF0)/XF);
   blk.style.opacity=Math.max(0,1-t/1.6);
 }
 
@@ -154,28 +221,91 @@ addEventListener("resize",function(){if(!run)frame(END)});
 
 function finalizarAnimacionZoom() {
     document.getElementById('texto-intro').style.opacity = '0';
-    
-    setTimeout(() => {
-        document.getElementById('globo-sam').style.opacity = '1';
-    }, 500);
+    const g=document.getElementById('globo-sam');
+    g.style.opacity = '1'; 
+    g.style.pointerEvents = 'auto';
 
     setTimeout(() => {
-        const globo = document.getElementById('globo-sam');
-        globo.classList.add('interactivo'); 
+        g.classList.add('interactivo'); 
     }, 4500);
 }
 
 function cambiarAEscenaTres() {
-    const globo = document.getElementById('globo-sam');
-    globo.style.opacity = '0';
-    globo.style.pointerEvents = 'none';
+    const g=document.getElementById('globo-sam');
+    g.style.opacity = '0';
+    g.style.pointerEvents = 'none';
     
-    const escena2 = document.getElementById('b');
-    escena2.style.opacity = '0';
+    document.getElementById('b').style.opacity = '0';
+    const c=document.getElementById('c');
+    c.style.opacity = '1'; 
+    c.style.pointerEvents = 'auto';
+
+    setTimeout(() => {
+        document.getElementById('globo-codicia').style.opacity = '1';
+    }, 1200);
+
+    setTimeout(() => {
+        document.getElementById('globo-codicia').style.opacity = '0';
+        irAEscenaBotones();
+    }, 6200); 
+}
+
+function irAEscenaBotones() {
+    document.getElementById('c').style.opacity = '0';
+    const d=document.getElementById('d');
+    d.style.opacity = '1'; 
+    d.style.pointerEvents = 'auto';
+
+    setTimeout(() => {
+        const cb = document.getElementById('contenedor-decisiones');
+        cb.style.opacity = '1'; 
+        cb.style.pointerEvents = 'auto';
+    }, 1000);
+}
+
+function elegirOpcion(respuesta) {
+    const cb = document.getElementById('contenedor-decisiones');
+    cb.style.opacity = '0';
+    cb.style.pointerEvents = 'none';
     
-    const escena3 = document.getElementById('c');
-    escena3.style.opacity = '1';
-    escena3.style.pointerEvents = 'auto';
+    document.getElementById('d').style.opacity = '0';
+    const e=document.getElementById('e');
+    e.style.opacity = '1'; 
+    e.style.pointerEvents = 'auto';
+
+    setTimeout(() => {
+        if (respuesta === 'hablar') {
+            document.getElementById('globo-elma-hablar').style.opacity = '1';
+            
+            setTimeout(() => {
+                document.getElementById('globo-elma-hablar').style.opacity = '0';
+                
+                setTimeout(() => {
+                    document.getElementById('globo-sam-respuesta').style.opacity = '1';
+                    
+                    setTimeout(() => {
+                        document.getElementById('globo-sam-respuesta').style.opacity = '0';
+                        irAEscenaFinalDefinitiva();
+                    }, 5000);
+                }, 500);
+            }, 4500);
+
+        } else {
+            document.getElementById('globo-resultado-nohablar').style.opacity = '1';
+            
+            setTimeout(() => {
+                document.getElementById('globo-resultado-nohablar').style.opacity = '0';
+                irAEscenaFinalDefinitiva();
+            }, 5000);
+        }
+    }, 1000);
+}
+
+function irAEscenaFinalDefinitiva() {
+    document.getElementById('e').style.opacity = '0';
+    const f = document.getElementById('f');
+    f.style.opacity = '1';
+    f.style.pointerEvents = 'auto';
 }
 
 frame(0);
