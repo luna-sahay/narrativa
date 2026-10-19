@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hot Dogs en Marte - Intro</title>
 <link rel="preconnect" href="https://googleapis.com">
-<link rel="preconnect" href="https://gstatic.com" crossorigin>
+<link rel="preconnect" href="https://gstatic.com" crossorigin>https://github.com/luna-sahay/narrativa/blob/main/index.html
 <link href="https://googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
@@ -15,7 +15,7 @@ body{display:flex;align-items:center;justify-content:center}
 #b{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%;opacity:0;display:block}
 #blk{position:absolute;inset:0;background:#000;pointer-events:none}
 
-/* Texto abajo a la derecha */
+/* Texto abajo a la derecha que sale al inicio */
 #texto-intro {
     position: absolute;
     bottom: 40px;
@@ -32,15 +32,15 @@ body{display:flex;align-items:center;justify-content:center}
 /* Globo de diálogo para Sam */
 #globo-sam {
     position: absolute;
-    top: 25%; 
-    left: 45%; 
+    top: 22%; 
+    left: 42%; 
     background: white;
     color: black;
     font-size: 22px;
     font-weight: bold;
     padding: 15px 20px;
     border-radius: 30px;
-    max-width: 250px;
+    max-width: 260px;
     text-align: center;
     box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
     opacity: 0; 
@@ -52,7 +52,7 @@ body{display:flex;align-items:center;justify-content:center}
     content: '';
     position: absolute;
     bottom: -15px;
-    left: 30px;
+    left: 40px;
     border-width: 15px 15px 0;
     border-style: solid;
     border-color: white transparent;
@@ -60,93 +60,91 @@ body{display:flex;align-items:center;justify-content:center}
     width: 0;
 }
 
-/* Botón Siguiente */
+/* Botón estilo flecha narrativa de cómic */
 #btn-siguiente {
     position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 12px 30px;
+    bottom: 40px;
+    right: 40px;
+    padding: 10px 25px;
     background: #ff5722;
     color: white;
     border: none;
-    border-radius: 25px;
+    border-radius: 0px;
     font-family: 'Kalam', cursive;
-    font-size: 22px;
+    font-size: 24px;
+    font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    clip-path: polygon(0% 20%, 80% 20%, 80% 0%, 100% 50%, 80% 100%, 80% 80%, 0% 80%);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.5s ease, background 0.2s;
+    transition: opacity 0.5s ease, background 0.2s, transform 0.2s;
     z-index: 6;
 }
 #btn-siguiente:hover {
     background: #e64a19;
+    transform: scale(1.05);
 }
 </style></head><body>
 <div id="stage">
+  <!-- REEMPLAZA ESTA LÍNEA 69 CON TU IMAGEN EN BASE64 COMPLETA -->
   <img id="a" src="Escena1-Escenario1.jpg">
   <img id="b" src="Escena2-Escenario2.jpg">
 
   <div id="texto-intro">¿Me está hablando...?</div>
-  <div id="globo-sam">¡Con todos los juguetes que van a llegar a este lugar, se va a llenar de clientes!</div>
-  <button id="btn-siguiente" onclick="irASiguienteEscena()">Siguiente Escena</button>
+  <div id="globo-sam">¡Con todos los cohetes que van a llegar a este lugar, se va a llenar de clientes!</div>
+  <button id="btn-siguiente" onclick="irASiguienteEscena()">Continuar...</button>
 
   <div id="blk"></div>
 </div>
 
 <script>
-// AQUÍ VOLVEMOS A ARMAR EL MOTOR ORIGINAL COMPLETO QUE ME MOSTRASTE
-var t0=null, run=true;
-var W=1376, H=768;
-var END=5.5; // Tiempo de duración de la animación en segundos
+var stage=document.getElementById("stage"),A=document.getElementById("a"),B=document.getElementById("b"),blk=document.getElementById("blk");
+var FLY=15,XF0=13.4,XF=1.8,END=FLY+0.5,t0=null,run=false;
 
-function frame(t) {
-    var A = document.getElementById("a");
-    var B = document.getElementById("b");
-    var blk = document.getElementById("blk");
-    
-    // Fórmulas matemáticas de tu animación de cámara original
-    var p = Math.max(0, Math.min(1, t / END));
-    var s = Math.exp(Math.log(1.0) * p); 
-    var cx = 50 + 0.5 * p + Math.sin(p * Math.PI) * 3 + Math.sin(t * 0.8) * 0.25 * (1 - p);
-    var cy = 40 + 22 * p + Math.sin(t * 0.6) * 0.2 * (1 - p);
-    var tx = W / 2 - cx / 100 * W * s, ty = H / 2 - cy / 100 * H * s;
-    
-    tx = Math.min(0, Math.max(W - W * s, tx));
-    ty = Math.min(0, Math.max(H - H * s, ty));
-    
-    A.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")";
-    B.style.opacity = "0";
-    blk.style.opacity = Math.max(0, 1 - t / 1.6);
+function ease(p){return 0.5-0.5*Math.cos(Math.PI*Math.min(1,Math.max(0,p)))}
+function sm(u){u=Math.min(1,Math.max(0,u));return u*u*(3-2*u)}
+
+function frame(t){
+  var W=stage.clientWidth,H=stage.clientHeight;
+  var p=ease(t/FLY),s=Math.exp(Math.log(1.8)*p);
+  var cx=50+0.5*p-Math.sin(p*Math.PI)*3+Math.sin(t*0.8)*0.25*(1-p);
+  var cy=40+22*p+Math.sin(t*0.6)*0.2*(1-p);
+  var tx=W/2-cx/100*W*s,ty=H/2-cy/100*H*s;
+  tx=Math.min(0,Math.max(W-W*s,tx));ty=Math.min(0,Math.max(H-H*s,ty));
+  A.style.transform="translate("+tx+"px,"+ty+"px) scale("+s+")";
+  B.style.opacity=sm((t-XF0)/XF);
+  blk.style.opacity=Math.max(0,1-t/1.6);
 }
 
-function tick(now) {
-    if (!run) return;
-    if (t0 === null) t0 = now;
-    var t = (now - t0) / 1000;
-    
-    if (t >= END) {
-        frame(END);
-        run = false;
-        finalizarAnimacionZoom(); // ACTIVAMOS TUS TEXTOS AL TERMINAR EL ZOOM
-        return;
-    }
-    frame(t);
-    requestAnimationFrame(tick);
+function tick(now){
+  if(!run)return;
+  if(t0===null)t0=now;
+  var t=(now-t0)/1000;
+  if(t>=END){
+    frame(END);
+    run=false;
+    finalizarAnimacionZoom(); // DISPARAMOS TUS DIÁLOGOS AL TERMINAR EL VIDEO
+    return;
+  }
+  frame(t);
+  requestAnimationFrame(tick);
 }
 
-// NUEVAS FUNCIONES PARA TUS TEXTOS E INTERACTIVIDAD
+function start(){t0=null;run=true;requestAnimationFrame(tick)}
+
+addEventListener("keydown",function(e){if(e.key==="r"||e.key==="R"){run=false;setTimeout(start,30)}});
+addEventListener("resize",function(){if(!run)frame(END)});
+
+// AL TERMINAR EL ZOOM SE ACTIVA ESTO:
 function finalizarAnimacionZoom() {
-    // Escondemos el texto de abajo a la derecha de forma suave
     document.getElementById('texto-intro').style.opacity = '0';
     
-    // Hacemos aparecer el globo de diálogo de Sam en su cabeza
+    // Muestra el globo de diálogo corregido sobre Sam
     setTimeout(() => {
         document.getElementById('globo-sam').style.opacity = '1';
     }, 500);
 
-    // Hacemos aparecer el botón "Siguiente" un poco después
+    // Muestra la flecha "Continuar..." un poco después
     setTimeout(() => {
         const btn = document.getElementById('btn-siguiente');
         btn.style.opacity = '1';
@@ -155,16 +153,12 @@ function finalizarAnimacionZoom() {
 }
 
 function irASiguienteEscena() {
-    document.getElementById('globo-sam').style.opacity = '0';
-    document.getElementById('btn-siguiente').style.opacity = '0';
-    
-    // Transición suave hacia la siguiente imagen de GitHub
-    const escena2 = document.getElementById('b');
-    escena2.style.transition = "opacity 1.5s ease-in-out";
-    escena2.style.opacity = "1";
+    // Aquí defines qué pasará en la siguiente escena cuando le den clic a Continuar
+    alert("¡Aquí cargaremos la siguiente escena de tu historia!");
 }
 
-// Arranca el código de forma automática al cargar la web
-requestAnimationFrame(tick);
+frame(0);
+window.addEventListener("load",function(){setTimeout(start,400)});
 </script>
 </body></html>
+
