@@ -2,20 +2,23 @@
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hot Dogs en Marte - Intro</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://googleapis.com">
 <link rel="preconnect" href="https://gstatic.com" crossorigin>
-<link href="https://googleapis.com" rel="stylesheet">
+<link href="https://googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 :root{color-scheme:dark;--bg:#000;box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family: 'Kalam', cursive;}
 body{display:flex;align-items:center;justify-content:center}
 #stage{position:relative;width:min(100vw,calc(100vh * 1376 / 768));aspect-ratio:1376/768;overflow:hidden;background:#000}
-#a{position:absolute;inset:0;width:100%;height:100%;transform-origin:0 0;will-change:transform;display:block;z-index:1;}
-#b{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%;opacity:0;display:block;z-index:2;transition:opacity 0.5s ease-in-out;}
+
+/* Ajustes de renderizado nativo para no alterar la calidad de tus dibujos */
+#a{position:absolute;inset:0;width:100%;height:100%;transform-origin:0 0;display:block;z-index:1;}
+#b{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%;opacity:0;display:block;z-index:2;transition:opacity 0.4s ease-in-out;}
+#c{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;display:block;pointer-events:none;z-index:4;transition:opacity 0.8s ease-in-out;}
 #blk{position:absolute;inset:0;background:#000;pointer-events:none;z-index:10;}
 
-/* Texto abajo a la derecha que sale al inicio */
+/* Texto informativo abajo a la derecha */
 #texto-intro {
     position: absolute;
     bottom: 40px;
@@ -29,11 +32,11 @@ body{display:flex;align-items:center;justify-content:center}
     z-index: 5;
 }
 
-/* Globo de diálogo para Sam */
+/* Globo de diálogo para Sam corregido para que flote sobre su cabeza */
 #globo-sam {
     position: absolute;
-    top: -20%; 
-    left: 42%; 
+    bottom: 60%; 
+    left: 38%; 
     background: white;
     color: black;
     font-size: 22px;
@@ -44,7 +47,7 @@ body{display:flex;align-items:center;justify-content:center}
     text-align: center;
     box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
     opacity: 0; 
-    transition: opacity 0.8s ease;
+    transition: opacity 0.6s ease;
     z-index: 6;
 }
 
@@ -67,38 +70,19 @@ body{display:flex;align-items:center;justify-content:center}
     100% { box-shadow: 0 0 0 0 rgba(255, 87, 34, 0); transform: scale(1); }
 }
 
-/* Aplicamos el brillo al globo de Sam y le indicamos que es cliqueable */
 #globo-sam.interactivo {
     cursor: pointer;
     animation: brilloGenially 2s infinite;
     border: 2px solid #ff5722; 
 }
-
-/* Tercera escena (CORREGIDO: z-index alto para obligarla a ponerse al frente de todo) */
-#c {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    display: block;
-    pointer-events: none;
-    transition: opacity 1.2s ease-in-out; 
-    z-index: 4; /* Pasa por encima de la imagen A y B al activarse */
-}
 </style></head><body>
 
 <div id="stage">
-  <!-- Imágenes de tu proyecto -->
   <img id="a" src="Escena1-Escenario1.jpg">
   <img id="b" src="Escena2-Escenario2.png">
   <img id="c" src="samAvaricioso.png">
 
-  <!-- Cuadro informativo dinámico -->
   <div id="texto-intro" style="opacity: 0;">Shhh, Sam está hablando…</div>
-  
-  <!-- Globo interactivo cliqueable -->
   <div id="globo-sam" onclick="cambiarAEscenaTres()">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
 
   <div id="blk"></div>
@@ -118,9 +102,11 @@ function frame(t){
   var cy=40+22*p+Math.sin(t*0.6)*0.2*(1-p);
   var tx=W/2-cx/100*W*s,ty=H/2-cy/100*H*s;
   tx=Math.min(0,Math.max(W-W*s,tx));ty=Math.min(0,Math.max(H-H*s,ty));
+  
+  // Hacemos el zoom sobre la imagen A
   A.style.transform="translate("+tx+"px,"+ty+"px) scale("+s+")";
   
-  // Solo aplicamos opacidad a B si la escena 3 no se ha activado
+  // La imagen B aparece de forma nativa sin estirarse matemáticamente
   if(document.getElementById("c").style.opacity !== "1"){
     B.style.opacity=sm((t-XF0)/XF);
   }
@@ -156,7 +142,6 @@ addEventListener("resize",function(){if(!run)frame(END)});
 
 function finalizarAnimacionZoom() {
     document.getElementById('texto-intro').style.opacity = '0';
-    
     setTimeout(() => {
         document.getElementById('globo-sam').style.opacity = '1';
     }, 500);
@@ -167,17 +152,14 @@ function finalizarAnimacionZoom() {
     }, 4500);
 }
 
-// CORREGIDO: Desvanecemos por completo B y subimos C a la capa del frente
 function cambiarAEscenaTres() {
     const globo = document.getElementById('globo-sam');
     globo.style.opacity = '0';
     globo.style.pointerEvents = 'none';
     
-    // Ocultamos la imagen B para que no tape nada
     const escena2 = document.getElementById('b');
     escena2.style.opacity = '0';
     
-    // Hacemos aparecer la imagen C al frente de todo de forma fluida
     const escena3 = document.getElementById('c');
     escena3.style.opacity = '1';
     escena3.style.pointerEvents = 'auto';
