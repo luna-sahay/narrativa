@@ -2,7 +2,6 @@
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hot Dogs en Marte - Intro</title>
-<!-- Importamos la fuente Kalam estilo cómic desde Google Fonts -->
 <link rel="preconnect" href="https://googleapis.com">
 <link rel="preconnect" href="https://gstatic.com" crossorigin>
 <link href="https://googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
@@ -16,7 +15,7 @@ body{display:flex;align-items:center;justify-content:center}
 #b{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%;opacity:0;display:block}
 #blk{position:absolute;inset:0;background:#000;pointer-events:none}
 
-/* 1. Texto abajo a la derecha durante el zoom */
+/* Texto abajo a la derecha */
 #texto-intro {
     position: absolute;
     bottom: 40px;
@@ -30,11 +29,11 @@ body{display:flex;align-items:center;justify-content:center}
     z-index: 5;
 }
 
-/* 2. Globo de diálogo estilo cómic para Sam */
+/* Globo de diálogo para Sam */
 #globo-sam {
     position: absolute;
-    top: 25%; /* Ajusta este porcentaje para moverlo arriba/abajo sobre su cabeza */
-    left: 45%; /* Ajusta este porcentaje para moverlo a la izquierda/derecha */
+    top: 25%; 
+    left: 45%; 
     background: white;
     color: black;
     font-size: 22px;
@@ -44,12 +43,11 @@ body{display:flex;align-items:center;justify-content:center}
     max-width: 250px;
     text-align: center;
     box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
-    opacity: 0; /* Oculto al principio */
+    opacity: 0; 
     transition: opacity 0.8s ease;
     z-index: 5;
 }
 
-/* El piquito del globo de diálogo */
 #globo-sam::after {
     content: '';
     position: absolute;
@@ -62,7 +60,7 @@ body{display:flex;align-items:center;justify-content:center}
     width: 0;
 }
 
-/* 3. Botón para pasar a la siguiente escena */
+/* Botón Siguiente */
 #btn-siguiente {
     position: absolute;
     bottom: 30px;
@@ -87,13 +85,9 @@ body{display:flex;align-items:center;justify-content:center}
 }
 </style></head><body>
 <div id="stage">
-  <!-- AQUÍ PEGA TU LÍNEA 14 ORIGINAL (La que empieza con data:image...) -->
   <img id="a" src="Escena1-Escenario1.jpg">
-  
-  <!-- Segunda escena (pon el nombre de la imagen que vas a subir a GitHub) -->
   <img id="b" src="Escena2-Escenario2.jpg">
 
-  <!-- Elementos nuevos que me pediste -->
   <div id="texto-intro">¿Me está hablando...?</div>
   <div id="globo-sam">¡Con todos los juguetes que van a llegar a este lugar, se va a llenar de clientes!</div>
   <button id="btn-siguiente" onclick="irASiguienteEscena()">Siguiente Escena</button>
@@ -102,39 +96,75 @@ body{display:flex;align-items:center;justify-content:center}
 </div>
 
 <script>
-// ... (Aquí van las funciones matemáticas de tu código original que ya tenías abajo) ...
-// Busca la función 'tick' o donde termina la animación en tu código original.
-// Al finalizar la animación, agregaremos este código automáticamente:
+// AQUÍ VOLVEMOS A ARMAR EL MOTOR ORIGINAL COMPLETO QUE ME MOSTRASTE
+var t0=null, run=true;
+var W=1376, H=768;
+var END=5.5; // Tiempo de duración de la animación en segundos
 
+function frame(t) {
+    var A = document.getElementById("a");
+    var B = document.getElementById("b");
+    var blk = document.getElementById("blk");
+    
+    // Fórmulas matemáticas de tu animación de cámara original
+    var p = Math.max(0, Math.min(1, t / END));
+    var s = Math.exp(Math.log(1.0) * p); 
+    var cx = 50 + 0.5 * p + Math.sin(p * Math.PI) * 3 + Math.sin(t * 0.8) * 0.25 * (1 - p);
+    var cy = 40 + 22 * p + Math.sin(t * 0.6) * 0.2 * (1 - p);
+    var tx = W / 2 - cx / 100 * W * s, ty = H / 2 - cy / 100 * H * s;
+    
+    tx = Math.min(0, Math.max(W - W * s, tx));
+    ty = Math.min(0, Math.max(H - H * s, ty));
+    
+    A.style.transform = "translate(" + tx + "px," + ty + "px) scale(" + s + ")";
+    B.style.opacity = "0";
+    blk.style.opacity = Math.max(0, 1 - t / 1.6);
+}
+
+function tick(now) {
+    if (!run) return;
+    if (t0 === null) t0 = now;
+    var t = (now - t0) / 1000;
+    
+    if (t >= END) {
+        frame(END);
+        run = false;
+        finalizarAnimacionZoom(); // ACTIVAMOS TUS TEXTOS AL TERMINAR EL ZOOM
+        return;
+    }
+    frame(t);
+    requestAnimationFrame(tick);
+}
+
+// NUEVAS FUNCIONES PARA TUS TEXTOS E INTERACTIVIDAD
 function finalizarAnimacionZoom() {
-    // Ocultamos el texto de abajo a la derecha
+    // Escondemos el texto de abajo a la derecha de forma suave
     document.getElementById('texto-intro').style.opacity = '0';
     
-    // Mostramos el globo de texto de Sam en la cabeza
+    // Hacemos aparecer el globo de diálogo de Sam en su cabeza
     setTimeout(() => {
         document.getElementById('globo-sam').style.opacity = '1';
     }, 500);
 
-    // Mostramos el botón para cambiar de escena un poquito después
+    // Hacemos aparecer el botón "Siguiente" un poco después
     setTimeout(() => {
         const btn = document.getElementById('btn-siguiente');
         btn.style.opacity = '1';
-        btn.pointerEvents = 'auto';
+        btn.style.pointerEvents = 'auto';
     }, 2000);
 }
 
 function irASiguienteEscena() {
-    // Hace aparecer la escena 2 desvaneciendo la anterior
     document.getElementById('globo-sam').style.opacity = '0';
     document.getElementById('btn-siguiente').style.opacity = '0';
     
+    // Transición suave hacia la siguiente imagen de GitHub
     const escena2 = document.getElementById('b');
     escena2.style.transition = "opacity 1.5s ease-in-out";
     escena2.style.opacity = "1";
 }
 
-// NOTA: Para activar 'finalizarAnimacionZoom()', solo debes llamarla 
-// justo debajo de la línea que ya tenías: "if(t>=END){frame(END);run=false; return;}"
-// Debería quedar así: if(t>=END){frame(END);run=false; finalizarAnimacionZoom(); return;}
+// Arranca el código de forma automática al cargar la web
+requestAnimationFrame(tick);
 </script>
 </body></html>
