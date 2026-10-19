@@ -80,19 +80,34 @@ body{display:flex;align-items:center;justify-content:center}
     border: 2px solid #ff5722; 
 }
 
-/* Tercera escena (CORREGIDO: z-index alto para obligarla a ponerse al frente de todo) */
-#c {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    display: block;
-    pointer-events: none;
-    transition: opacity 1.2s ease-in-out; 
-    z-index: 4; /* Pasa por encima de la imagen A y B al activarse */
+#a{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    transform-origin:0 0;
+    display:block;
+    z-index:1;
+    /* Eliminamos will-change para evitar el desenfoque del navegador */
+    image-rendering: -webkit-optimize-contrast; /* Fuerza nitidez máxima en Chrome/Safari */
+    image-rendering: crisp-edges;
 }
+#b{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:50% 62%;
+    opacity:0;
+    display:block;
+    z-index:2;
+    transition:opacity 0.5s ease-in-out;
+    /* Evita que la segunda imagen se opaque al mezclarse */
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: crisp-edges;
+}
+
 </style></head><body>
 
 <div id="stage">
