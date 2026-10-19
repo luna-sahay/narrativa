@@ -12,13 +12,12 @@ html,body{margin:0;height:100%;background:var(--bg);overflow:hidden;font-family:
 body{display:flex;align-items:center;justify-content:center}
 #stage{position:relative;width:min(100vw,calc(100vh * 1376 / 768));aspect-ratio:1376/768;overflow:hidden;background:#000}
 
-/* Ajustes de renderizado nativo para no alterar la calidad de tus dibujos */
-#a{position:absolute;inset:0;width:100%;height:100%;transform-origin:0 0;display:block;z-index:1;}
-#b{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%;opacity:0;display:block;z-index:2;transition:opacity 0.4s ease-in-out;}
-#c{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;display:block;pointer-events:none;z-index:4;transition:opacity 0.8s ease-in-out;}
+/* Capas estables: la animación de la imagen A no afectará la nitidez de la imagen B */
+#a{position:absolute;inset:0;width:100%;height:100%;transform-origin:0 0;will-change:transform;display:block;z-index:1;}
+#b{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%;opacity:0;display:block;z-index:2;}
 #blk{position:absolute;inset:0;background:#000;pointer-events:none;z-index:10;}
 
-/* Texto informativo abajo a la derecha */
+/* Texto abajo a la derecha que sale al inicio */
 #texto-intro {
     position: absolute;
     bottom: 40px;
@@ -32,11 +31,11 @@ body{display:flex;align-items:center;justify-content:center}
     z-index: 5;
 }
 
-/* Globo de diálogo para Sam corregido para que flote sobre su cabeza */
+/* Globo de diálogo para Sam (Corregido con top negativo para que no tape su cara) */
 #globo-sam {
     position: absolute;
-    bottom: 60%; 
-    left: 38%; 
+    top: -15%; 
+    left: 42%; 
     background: white;
     color: black;
     font-size: 22px;
@@ -47,7 +46,7 @@ body{display:flex;align-items:center;justify-content:center}
     text-align: center;
     box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
     opacity: 0; 
-    transition: opacity 0.6s ease;
+    transition: opacity 0.8s ease;
     z-index: 6;
 }
 
@@ -75,9 +74,24 @@ body{display:flex;align-items:center;justify-content:center}
     animation: brilloGenially 2s infinite;
     border: 2px solid #ff5722; 
 }
+
+/* Tercera escena */
+#c {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    display: block;
+    pointer-events: none;
+    transition: opacity 1.2s ease-in-out; 
+    z-index: 4; 
+}
 </style></head><body>
 
 <div id="stage">
+  <!-- Tus imágenes originales de GitHub -->
   <img id="a" src="Escena1-Escenario1.jpg">
   <img id="b" src="Escena2-Escenario2.png">
   <img id="c" src="samAvaricioso.png">
@@ -103,10 +117,8 @@ function frame(t){
   var tx=W/2-cx/100*W*s,ty=H/2-cy/100*H*s;
   tx=Math.min(0,Math.max(W-W*s,tx));ty=Math.min(0,Math.max(H-H*s,ty));
   
-  // Hacemos el zoom sobre la imagen A
   A.style.transform="translate("+tx+"px,"+ty+"px) scale("+s+")";
   
-  // La imagen B aparece de forma nativa sin estirarse matemáticamente
   if(document.getElementById("c").style.opacity !== "1"){
     B.style.opacity=sm((t-XF0)/XF);
   }
@@ -142,6 +154,7 @@ addEventListener("resize",function(){if(!run)frame(END)});
 
 function finalizarAnimacionZoom() {
     document.getElementById('texto-intro').style.opacity = '0';
+    
     setTimeout(() => {
         document.getElementById('globo-sam').style.opacity = '1';
     }, 500);
