@@ -24,13 +24,15 @@
     advanced = true;
     // Mantiene el negro final unos instantes y luego muestra la intro del marciano.
     transition.classList.add('active');
-    setTimeout(() => {
-      frame.title = 'Historia de Sam y el marciano';
-      frame.src = 'marciano.html';
-      frame.onload = () => {
-        setTimeout(() => transition.classList.remove('active'), 250);
-      };
-    }, 2200);
+
+setTimeout(() => {
+  frame.title = 'Historia de Sam y el marciano';
+  frame.src = 'marciano.html';
+
+  frame.onload = () => {
+    setTimeout(() => transition.classList.remove('active'), 250);
+  };
+}, 2200);
   });
 </script>
 </body>
