@@ -4,114 +4,34 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hot Dogs en Marte — Historia completa</title>
-
 <style>
   * { box-sizing: border-box; }
-
-  html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    overflow: hidden;
-  }
-
-  #story {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: #000;
-  }
-
-  #transition {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    background: #000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 1.2s ease;
-  }
-
-  #transition.active { opacity: 1; }
+  html, body { margin:0; width:100%; height:100%; background:#000; overflow:hidden; }
+  #story { display:block; width:100%; height:100%; border:0; background:#000; }
+  #transition { position:fixed; inset:0; z-index:10; background:#000; opacity:0; pointer-events:none; transition:opacity 1.2s ease; }
+  #transition.active { opacity:1; }
 </style>
 </head>
-
 <body>
-<iframe
-  id="story"
-  title="Historia de Sam y Elma"
-  src="./elma.html"
-  allow="autoplay">
-</iframe>
-
+<iframe id="story" title="Historia de Sam y Elma" src="elma.html" allow="autoplay"></iframe>
 <div id="transition" aria-hidden="true"></div>
-
 <script>
-  const frame = document.getElementById("story");
-  const transition = document.getElementById("transition");
-
+  const frame = document.getElementById('story');
+  const transition = document.getElementById('transition');
   let advanced = false;
-  let observerTimer = null;
-
-  function pasarAMarciano() {
-    if (advanced) return;
+  window.addEventListener('message', (event) => {
+    if (event.source !== frame.contentWindow || !event.data || event.data.type !== 'sam-elma-finished' || advanced) return;
     advanced = true;
-
-    if (observerTimer) clearInterval(observerTimer);
-
-    transition.classList.add("active");
-
+    // Mantiene el negro final unos instantes y luego muestra la intro del marciano.
+    transition.classList.add('active');
     setTimeout(() => {
+      frame.title = 'Historia de Sam y el marciano';
+      frame.src = 'marciano.html';
       frame.onload = () => {
-        frame.onload = null;
-        setTimeout(() => {
-          transition.classList.remove("active");
-        }, 300);
+        setTimeout(() => transition.classList.remove('active'), 250);
       };
-
-      frame.title = "Historia de Sam y el marciano";
-      frame.src = "./marciano.html";
     }, 2200);
-  }
-
-  function revisarFinalDeElma() {
-    if (advanced) return;
-
-    try {
-      const doc = frame.contentDocument;
-      if (!doc) return;
-
-      const final = doc.getElementById("final-negro");
-      if (!final) return;
-
-      if (
-        final.classList.contains("activo") ||
-        final.classList.contains("active")
-      ) {
-        pasarAMarciano();
-      }
-    } catch (error) {
-      // Si no se puede inspeccionar la historia, no se interrumpe su reproducción.
-    }
-  }
-
-  frame.addEventListener("load", () => {
-    if (advanced) return;
-
-    if (observerTimer) clearInterval(observerTimer);
-
-    observerTimer = setInterval(revisarFinalDeElma, 500);
-  });
-
-  window.addEventListener("message", (event) => {
-    if (event.source !== frame.contentWindow) return;
-    if (!event.data || event.data.type !== "sam-elma-finished") return;
-
-    pasarAMarciano();
   });
 </script>
 </body>
 </html>
-```
