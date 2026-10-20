@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,9 +6,7 @@
 <title>Hot Dogs en Marte — Historia completa</title>
 
 <style>
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
   html, body {
     margin: 0;
@@ -37,55 +34,84 @@
     transition: opacity 1.2s ease;
   }
 
-  #transition.active {
-    opacity: 1;
-  }
+  #transition.active { opacity: 1; }
 </style>
 </head>
 
 <body>
-  <iframe
-    id="story"
-    title="Historia de Sam y Elma"
-    src="./historia_sam_elma.html"
-    allow="autoplay">
-  </iframe>
+<iframe
+  id="story"
+  title="Historia de Sam y Elma"
+  src="./historia_sam_elma.html"
+  allow="autoplay">
+</iframe>
 
-  <div id="transition" aria-hidden="true"></div>
+<div id="transition" aria-hidden="true"></div>
 
-  <script>
-    const frame = document.getElementById("story");
-    const transition = document.getElementById("transition");
+<script>
+  const frame = document.getElementById("story");
+  const transition = document.getElementById("transition");
 
-    let advanced = false;
+  let advanced = false;
+  let observerTimer = null;
 
-    function pasarAMarciano() {
-      if (advanced) return;
-      advanced = true;
+  function pasarAMarciano() {
+    if (advanced) return;
+    advanced = true;
 
-      transition.classList.add("active");
+    if (observerTimer) clearInterval(observerTimer);
 
-      setTimeout(() => {
-        frame.onload = function () {
-          frame.onload = null;
+    transition.classList.add("active");
 
-          setTimeout(() => {
-            transition.classList.remove("active");
-          }, 300);
-        };
+    setTimeout(() => {
+      frame.onload = () => {
+        frame.onload = null;
+        setTimeout(() => {
+          transition.classList.remove("active");
+        }, 300);
+      };
 
-        frame.title = "Historia de Sam y el marciano";
-        frame.src = "./historia_marciano.html";
-      }, 2200);
+      frame.title = "Historia de Sam y el marciano";
+      frame.src = "./historia_marciano.html";
+    }, 2200);
+  }
+
+  function revisarFinalDeElma() {
+    if (advanced) return;
+
+    try {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+
+      const final = doc.getElementById("final-negro");
+      if (!final) return;
+
+      if (
+        final.classList.contains("activo") ||
+        final.classList.contains("active")
+      ) {
+        pasarAMarciano();
+      }
+    } catch (error) {
+      // Si no se puede inspeccionar la historia, no se interrumpe su reproducción.
     }
+  }
 
-    window.addEventListener("message", function (event) {
-      if (event.source !== frame.contentWindow) return;
-      if (!event.data || event.data.type !== "sam-elma-finished") return;
+  frame.addEventListener("load", () => {
+    if (advanced) return;
 
-      pasarAMarciano();
-    });
-  </script>
+    if (observerTimer) clearInterval(observerTimer);
+
+    observerTimer = setInterval(revisarFinalDeElma, 500);
+  });
+
+  window.addEventListener("message", (event) => {
+    if (event.source !== frame.contentWindow) return;
+    if (!event.data || event.data.type !== "sam-elma-finished") return;
+
+    pasarAMarciano();
+  });
+</script>
 </body>
 </html>
 ```
