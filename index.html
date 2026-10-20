@@ -21,7 +21,7 @@ body { display: flex; align-items: center; justify-content: center; }
 #stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
 #a { z-index: 1; transform-origin: 0 0; will-change: transform; }
 #b { z-index: 2; object-position: 50% 62%; opacity: 0; }
-#c, #d, #e, #f { opacity: 0; pointer-events: none; transition: opacity 0.2s ease-in-out; }
+#c, #d, #e, #f { opacity: 0; pointer-events: none; transition: opacity 0.8s ease-in-out; }
 #c { z-index: 10; } #d { z-index: 12; } #e { z-index: 14; } #f { z-index: 16; }
 
 #blk { position: absolute; inset: 0; z-index: 40; background: #000; opacity: 1; pointer-events: none; }
@@ -87,14 +87,17 @@ body { display: flex; align-items: center; justify-content: center; }
   <img id="e" src="sammaltratador.jpg" alt="">
   <img id="f" src="ElmaTriste.png" alt="">
 
-    <div id="texto-intro">Shhh, Sam está hablando…</div>
+  <div id="texto-intro">Shhh, Sam está hablando…</div>
   <div id="globo-sam" onclick="cambiarAEscenaTres()">¡Con todos los cohetes que van a llegar, este lugar se va a llenar de clientes!</div>
   <div id="globo-codicia">¿Te imaginas todo el dinero que vamos a tener? ¡Seremos millonarios!</div>
   <div id="globo-genio">¡Soy un brillante genio! ¡Este negocio va a ser un éxito rotundo en Marte, ya lo verás!</div>
-  <div id="globo-elma-hablar">Sam, ve más despacio... No te apresures tanto, no quiero que te lleves una decepción...</div>
-  <div id="globo-sam-respuesta">¡¿Decepción?! Bah, qué tonterías dices. Tú solo encárgate de limpiar el puesto y déjame los millones a mí, que el éxito está garantizado</div>
-  <div id="globo-elma-suplica">Sí… Sam</div>
-  <div id="globo-resultado-nohablar">Elma mejor ve a barrer el puesto y déjame los negocios a mí</div>
+  
+  <!-- Nuevos textos con la personalidad dulce de Elma y el mandado de Sam -->
+  <div id="globo-elma-hablar">¡Sam, mi cielo, vas muy rápido... Me da miedo que te apresures tanto y las cosas no salgan bien!</div>
+  <div id="globo-sam-respuesta">¡¿Fracaso?! Bah, qué tonterías dices. Mejor ve a barrer el puesto y déjame los negocios a mí.</div>
+  
+  <div id="globo-elma-suplica">¡Te lo advertí, Sam! ¡Baja esa arma por favor! 😰</div>
+  <div id="globo-resultado-nohablar">*(Sam sigue contando billetes imaginarios en su mente sin prestarte atención)*</div>
 
   <div id="contenedor-decisiones">
     <button class="btn-decision" onclick="elegirOpcion('hablar')">Advertirle sobre el negocio</button>
