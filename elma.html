@@ -308,8 +308,11 @@ function mostrarFinalNegro() {
   if (!final || final.classList.contains('activo')) return;
   // Oculta elementos interactivos para que nada quede por encima del negro.
   document.querySelectorAll('#stage .btn-decision, #stage #globo-sam, #stage #globo-codicia, #stage #globo-genio, #stage #globo-elma-hablar, #stage #globo-sam-respuesta, #stage #globo-elma-suplica, #stage #globo-resultado-nohablar, #stage #texto-intro, #stage #audio-control').forEach(el => { el.style.opacity='0'; el.style.pointerEvents='none'; });
-  final.classList.add('activo');
-  AudioCine.stopMusic && AudioCine.stopMusic();
+  final.classList.add('active');
+AudioCine.stopMusic && AudioCine.stopMusic();
+
+if (window.parent !== window) {
+  window.parent.postMessage({ type: 'sam-elma-finished' }, '*');
 }
 
 function cambiarAEscenaTres() {
