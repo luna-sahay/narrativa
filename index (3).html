@@ -13,7 +13,7 @@
 </style>
 </head>
 <body>
-<iframe id="story" title="Historia de Sam y Elma" src="historia_sam_elma.html" allow="autoplay"></iframe>
+<iframe id="story" title="Historia de Sam y Elma" src="elma.html" allow="autoplay"></iframe>
 <div id="transition" aria-hidden="true"></div>
 <script>
   const frame = document.getElementById('story');
@@ -26,7 +26,7 @@
     transition.classList.add('active');
     setTimeout(() => {
       frame.title = 'Historia de Sam y el marciano';
-      frame.src = 'historia_marciano.html';
+      frame.src = 'marciano.html';
       frame.onload = () => {
         setTimeout(() => transition.classList.remove('active'), 250);
       };
