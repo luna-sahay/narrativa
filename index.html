@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,36 +7,165 @@
 <title>Hot Dogs en Marte — Historia completa</title>
 <style>
   * { box-sizing: border-box; }
-  html, body { margin:0; width:100%; height:100%; background:#000; overflow:hidden; }
-  #story { display:block; width:100%; height:100%; border:0; background:#000; }
-  #transition { position:fixed; inset:0; z-index:10; background:#000; opacity:0; pointer-events:none; transition:opacity 1.2s ease; }
-  #transition.active { opacity:1; }
+
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+  }
+
+  #story {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+  }
+
+  #transition {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
+  }
+
+  #transition.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
 </style>
 </head>
 <body>
-<iframe id="story" title="Historia de Sam y Elma" src="elma.html" allow="autoplay"></iframe>
+
+<iframe
+  id="story"
+  title="Historia de Sam y Elma"
+  src="./elma.html"
+  allow="autoplay"
+></iframe>
+
 <div id="transition" aria-hidden="true"></div>
+
 <script>
+(() => {
   const frame = document.getElementById('story');
   const transition = document.getElementById('transition');
+
   let advanced = false;
-  window.addEventListener('message', (event) => {
-    if (event.source !== frame.contentWindow || !event.data || event.data.type !== 'sam-elma-finished' || advanced) return;
+  let checking = false;
+
+  function avanzarAlMarciano() {
+    if (advanced) return;
     advanced = true;
-    // Mantiene el negro final unos instantes y luego muestra la intro del marciano.
+    checking = false;
+
+    // Cubrir la pantalla antes de cambiar de historia.
     transition.classList.add('active');
 
-setTimeout(() => {
-  frame.title = 'Historia de Sam y el marciano';
+    setTimeout(() => {
+      frame.onload = () => {
+        frame.onload = null;
+        frame.title = 'Historia de Sam y el marciano';
 
-  frame.onload = () => {
-    transition.classList.remove('active');
-    frame.onload = null;
-  };
+        // Esperar a que la nueva historia esté cargada.
+        setTimeout(() => {
+          transition.classList.remove('active');
+        }, 500);
+      };
 
-  frame.src = 'marciano.html';
-}, 2200);
+      frame.onerror = () => {
+        // Si falla la carga, mantener el aviso en la consola.
+        console.error('No se pudo cargar marciano.html');
+      };
+
+      frame.src = './marciano.html';
+    }, 1500);
+  }
+
+  // Método principal: recibir el aviso desde el final de Elma.
+  window.addEventListener('message', (event) => {
+    if (
+      event.source === frame.contentWindow &&
+      event.data &&
+      event.data.type === 'sam-elma-finished'
+    ) {
+      avanzarAlMarciano();
+    }
   });
+
+  // Método alternativo: detectar la pantalla final de Elma.
+  // Así no dependemos exclusivamente del mensaje.
+  function comprobarFinal() {
+    if (advanced || checking) return;
+
+    try {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+
+      const finalNegro = doc.getElementById('final-negro');
+
+      if (
+        finalNegro &&
+        (
+          finalNegro.classList.contains('activo') ||
+          finalNegro.classList.contains('active')
+        )
+      ) {
+        checking = true;
+        setTimeout(() => {
+          comprobarFinalVisible(finalNegro);
+        }, 800);
+      }
+    } catch (error) {
+      // Si el navegador impide leer el iframe, queda activo
+      // el método principal mediante postMessage.
+    }
+  }
+
+  function comprobarFinalVisible(elemento) {
+    if (advanced) return;
+
+    try {
+      if (!elemento.isConnected) {
+        checking = false;
+        return;
+      }
+
+      const estilo = frame.contentWindow.getComputedStyle(elemento);
+      const visible =
+        estilo.display !== 'none' &&
+        estilo.visibility !== 'hidden' &&
+        Number(estilo.opacity) > 0;
+
+      if (visible) {
+        avanzarAlMarciano();
+      } else {
+        checking = false;
+      }
+    } catch (error) {
+      checking = false;
+    }
+  }
+
+  // Comenzar la comprobación después de cargar Elma.
+  frame.addEventListener('load', () => {
+    if (advanced) return;
+
+    const timer = setInterval(() => {
+      if (advanced) {
+        clearInterval(timer);
+        return;
+      }
+      comprobarFinal();
+    }, 500);
+  });
+})();
 </script>
+
 </body>
 </html>
